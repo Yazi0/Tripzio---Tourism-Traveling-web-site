@@ -21,7 +21,11 @@ export const ListingDetail = () => {
         phone: '',
         location: '',
         guests: 1,
-        arrivalDate: ''
+        arrivalDate: '',
+        days: 1,
+        withDriver: 'With Driver',
+        country: '',
+        passport: ''
     });
 
     // Filtering State (kept for non-tour listings if needed, or legacy)
@@ -37,7 +41,7 @@ export const ListingDetail = () => {
     });
 
     const handleBookClick = () => {
-        if (listing?.type === 'TOUR') {
+        if (listing?.type === 'TOUR' || listing?.type === 'VEHICLE') {
             setIsBookingModalOpen(true);
         } else {
             navigate(`/checkout/${listing?.type}/${listing?.id}`);
@@ -45,18 +49,39 @@ export const ListingDetail = () => {
     };
 
     const handleWhatsAppRedirect = () => {
-        if (!formData.name || !formData.phone || !formData.location || !formData.arrivalDate) {
-            alert('Please fill in all fields');
+        // Validation
+        if (!formData.name || !formData.phone || !formData.arrivalDate) {
+            alert('Please fill in Name, Phone, and Date');
+            return;
+        }
+        if (listing?.type !== 'VEHICLE' && !formData.location) {
+            alert('Please fill in Location');
             return;
         }
 
-        const message = `*New Tour Booking Request*
-Tour: ${listing?.title}
+        const typeLabel = listing?.type === 'VEHICLE' ? 'Vehicle Rental' : 'Tour Booking';
+        const dateLabel = listing?.type === 'VEHICLE' ? 'Pickup Date' : 'Arrival Date';
+        const countLabel = listing?.type === 'VEHICLE' ? '' : 'Guests';
+
+        let message = `*New ${typeLabel} Request*
+Listing: ${listing?.title}
 Name: ${formData.name}
-Phone: ${formData.phone}
-Location: ${formData.location}
-Guests: ${formData.guests}
-Arrival Date: ${formData.arrivalDate}`;
+Phone: ${formData.phone}`;
+
+        if (listing?.type !== 'VEHICLE') {
+            message += `\nLocation: ${formData.location}
+Guests: ${formData.guests}`;
+        }
+
+        message += `\n${dateLabel}: ${formData.arrivalDate}`;
+
+        if (listing?.type === 'VEHICLE') {
+            message += `\nVehicle Type: ${(listing as any).vehicleType || 'Standard'}
+Duration: ${formData.days} Days
+Driver Option: ${formData.withDriver}
+Country: ${formData.country}
+Passport/ID: ${formData.passport}`;
+        }
 
         const url = `https://wa.me/94776683072?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
@@ -88,7 +113,9 @@ Arrival Date: ${formData.arrivalDate}`;
             <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col overflow-hidden">
                 <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900">Book Your Tour</h2>
+                        <h2 className="text-xl font-bold text-gray-900">
+                            {listing.type === 'VEHICLE' ? 'Book Your Vehicle' : 'Book Your Tour'}
+                        </h2>
                         <p className="text-gray-500 text-sm">{listing.title}</p>
                     </div>
                     <button onClick={() => setIsBookingModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -119,30 +146,59 @@ Arrival Date: ${formData.arrivalDate}`;
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Your Location / Hotel</label>
-                        <input
-                            type="text"
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
-                            placeholder="Colombo, Kandy, etc."
-                            value={formData.location}
-                            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                        />
-                    </div>
-
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Guests</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
                             <input
-                                type="number"
-                                min="1"
+                                type="text"
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
-                                value={formData.guests}
-                                onChange={(e) => setFormData({ ...formData, guests: parseInt(e.target.value) || 1 })}
+                                placeholder="Your Country"
+                                value={formData.country}
+                                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Arrival Date</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">ID / Passport No</label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                                placeholder="Passport ID"
+                                value={formData.passport}
+                                onChange={(e) => setFormData({ ...formData, passport: e.target.value })}
+                            />
+                        </div>
+                    </div>
+
+                    {listing.type !== 'VEHICLE' && (
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Your Location / Hotel</label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                                placeholder="Colombo, Kandy, etc."
+                                value={formData.location}
+                                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                            />
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-4">
+                        {listing.type !== 'VEHICLE' && (
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Guests</label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                                    value={formData.guests}
+                                    onChange={(e) => setFormData({ ...formData, guests: parseInt(e.target.value) || 1 })}
+                                />
+                            </div>
+                        )}
+                        <div className={listing.type === 'VEHICLE' ? "col-span-2" : ""}>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                {listing.type === 'VEHICLE' ? 'Pickup Date' : 'Arrival Date'}
+                            </label>
                             <input
                                 type="date"
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
@@ -279,21 +335,27 @@ Arrival Date: ${formData.arrivalDate}`;
                                 </div>
                             </div>
 
-                            {/* Conditional Rendering for Tour vs Others */}
-                            {listing.type === 'TOUR' ? (
+                            {/* Conditional Rendering for Tour/Vehicle vs Others */}
+                            {listing.type === 'TOUR' || listing.type === 'VEHICLE' ? (
                                 <div className="space-y-6">
                                     <div className="bg-primary-50 p-4 rounded-xl border border-primary-100">
-                                        <p className="text-sm text-primary-800 font-semibold mb-1">Duration</p>
-                                        <p className="text-2xl font-bold text-primary-600">{(listing as any).duration || 'Flexible'}</p>
+                                        <p className="text-sm text-primary-800 font-semibold mb-1">
+                                            {listing.type === 'VEHICLE' ? 'Vehicle Type' : 'Duration'}
+                                        </p>
+                                        <p className="text-2xl font-bold text-primary-600">
+                                            {listing.type === 'VEHICLE' ? (listing as any).vehicleType || 'Standard' : (listing as any).duration || 'Flexible'}
+                                        </p>
                                     </div>
 
                                     <div className="flex items-center gap-2 text-sm text-gray-600">
                                         <Info className="w-4 h-4 text-primary-500" />
-                                        <span>Customizable itinerary available</span>
+                                        <span>
+                                            {listing.type === 'VEHICLE' ? 'Driver included in price' : 'Customizable itinerary available'}
+                                        </span>
                                     </div>
 
                                     <Button size="lg" className="w-full py-6 text-lg shadow-primary-500/30 hover:shadow-primary-500/50" onClick={handleBookClick}>
-                                        Book Tour
+                                        {listing.type === 'VEHICLE' ? 'Book Vehicle' : 'Book Tour'}
                                     </Button>
                                     <p className="text-center text-xs text-gray-500">Instant confirmation via WhatsApp</p>
                                 </div>

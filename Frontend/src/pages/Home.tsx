@@ -263,7 +263,7 @@ export const Home = () => {
                         <div className="hidden lg:block relative">
                             <div className="grid grid-cols-2 gap-4">
                                 <img
-                                    src="https://images.unsplash.com/photo-1566766393433-a15d8629f957?auto=format&fit=crop&q=80&w=600"
+                                    src="https://thumbs.dreamstime.com/b/sri-lanka-train-ride-scenic-tea-plantations-hill-country-adventure-travel-photography-journey-stunning-picturesque-365281018.jpg"
                                     alt="Train"
                                     className="rounded-2xl transform translate-y-8 shadow-2xl"
                                 />
