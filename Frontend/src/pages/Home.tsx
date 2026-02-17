@@ -6,28 +6,32 @@ import { Card } from '../components/ui/Card';
 import { destinations, Destination } from './DestinationsPage';
 import { ListingCard } from '../components/features/ListingCard';
 import { HeroSearch } from '../components/features/HeroSearch';
-import { getFeaturedListings } from '../api/listings';
+import { getFeaturedListings, getListings } from '../api/listings';
 import { Listing } from '../types';
+import WhyChooseImage from '../assets/images/WhyChooese.png';
 
 export const Home = () => {
-    const [featured, setFeatured] = useState<Listing[]>([]);
+    const [tours, setTours] = useState<Listing[]>([]);
+    const [vehicles, setVehicles] = useState<Listing[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeMood, setActiveMood] = useState<'adventure' | 'relaxation' | null>(null);
     const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     useEffect(() => {
-        const fetchFeatured = async () => {
+        const fetchData = async () => {
             try {
-                const data = await getFeaturedListings();
-                setFeatured(data);
+                const toursData = await getListings('TOUR');
+                const vehiclesData = await getListings('VEHICLE');
+                setTours(toursData.slice(0, 4));
+                setVehicles(vehiclesData.slice(0, 4));
             } catch (error) {
                 console.error(error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchFeatured();
+        fetchData();
     }, []);
 
     const categories = [
@@ -36,7 +40,7 @@ export const Home = () => {
         { name: 'Tours', icon: Map, href: '/tours', color: 'bg-green-100 text-green-600' },
     ];
 
-    const popularDestinations = destinations.slice(0, 4); // Use the first 4 rich destinations
+    const popularDestinations = destinations.slice(0, 4);
 
     const openDestinationModal = (destination: Destination) => {
         setSelectedDestination(destination);
@@ -147,12 +151,12 @@ export const Home = () => {
                 </div>
             </section>
 
-            {/* Featured Listings */}
+            {/* Popular Tours Section */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
                 <div className="flex justify-between items-end mb-8">
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900">Trending Experiences</h2>
-                        <p className="mt-1 text-gray-600">Hand-picked selections just for you</p>
+                        <h2 className="text-2xl font-bold text-gray-900">Popular Tours</h2>
+                        <p className="mt-1 text-gray-600">Explore our most rated tour packages</p>
                     </div>
                     <Link to="/tours">
                         <Button variant="ghost" className="hidden sm:flex items-center text-primary-600 hover:text-primary-700 hover:bg-primary-50">
@@ -160,7 +164,6 @@ export const Home = () => {
                         </Button>
                     </Link>
                 </div>
-
                 {loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[1, 2, 3, 4].map(i => (
@@ -169,11 +172,110 @@ export const Home = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {featured.slice(0, 4).map((listing, index) => (
+                        {tours.map((listing) => (
                             <ListingCard key={listing.id} listing={listing} />
                         ))}
                     </div>
                 )}
+            </section>
+
+            {/* Rent a Vehicle Section */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
+                <div className="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Rent a Vehicle</h2>
+                        <p className="mt-1 text-gray-600">Reliable transportation for your journey</p>
+                    </div>
+                    <Link to="/vehicles">
+                        <Button variant="ghost" className="hidden sm:flex items-center text-primary-600 hover:text-primary-700 hover:bg-primary-50">
+                            View All <ChevronRight className="ml-1 h-4 w-4" />
+                        </Button>
+                    </Link>
+                </div>
+                {loading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {[1, 2, 3, 4].map(i => (
+                            <div key={i} className="bg-white rounded-xl h-80 animate-pulse border border-gray-100" />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {vehicles.map((listing) => (
+                            <ListingCard key={listing.id} listing={listing} />
+                        ))}
+                    </div>
+                )}
+            </section>
+
+            {/* About Us Section */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
+                <div className="relative rounded-3xl overflow-hidden bg-primary-900 text-white">
+                    <div className="absolute inset-0">
+                        <img
+                            src={WhyChooseImage}
+                            alt="Sri Lanka Culture"
+                            className="w-full h-full object-cover opacity-20"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary-900 via-primary-900/90 to-transparent" />
+                    </div>
+
+                    <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 p-8 md:p-16 items-center">
+                        <div className="space-y-6">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-800 text-primary-100 text-sm font-medium">
+                                <Star className="h-4 w-4 fill-primary-100" />
+                                <span>Why Choose Us</span>
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+                                Experience Sri Lanka with a trusted companion
+                            </h2>
+                            <p className="text-primary-100 text-lg leading-relaxed">
+                                We are dedicated to providing you with the most authentic and memorable experiences in Sri Lanka. From curated tours to reliable vehicle rentals, we ensure your journey is seamless and unforgettable.
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-6 pt-4">
+                                <div>
+                                    <h4 className="text-3xl font-bold mb-1">50+</h4>
+                                    <p className="text-primary-200 text-sm">Destinations</p>
+                                </div>
+                                <div>
+                                    <h4 className="text-3xl font-bold mb-1">10k+</h4>
+                                    <p className="text-primary-200 text-sm">Happy Travelers</p>
+                                </div>
+                                <div>
+                                    <h4 className="text-3xl font-bold mb-1">24/7</h4>
+                                    <p className="text-primary-200 text-sm">Support</p>
+                                </div>
+                                <div>
+                                    <h4 className="text-3xl font-bold mb-1">100%</h4>
+                                    <p className="text-primary-200 text-sm">Satisfaction</p>
+                                </div>
+                            </div>
+
+                            <div className="pt-4">
+                                <Link to="/about">
+                                    <Button className="bg-white text-primary-900 hover:bg-gray-100 border-none px-8 py-3 text-lg">
+                                        Learn More About Us
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="hidden lg:block relative">
+                            <div className="grid grid-cols-2 gap-4">
+                                <img
+                                    src="https://images.unsplash.com/photo-1566766393433-a15d8629f957?auto=format&fit=crop&q=80&w=600"
+                                    alt="Train"
+                                    className="rounded-2xl transform translate-y-8 shadow-2xl"
+                                />
+                                <img
+                                    src="https://images.unsplash.com/photo-1585970480901-90d6bb2a48b5?auto=format&fit=crop&q=80&w=600"
+                                    alt="Elephant"
+                                    className="rounded-2xl transform -translate-y-8 shadow-2xl"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             {/* Inspiration / Moods */}
@@ -484,4 +586,5 @@ export const Home = () => {
             )}
         </div>
     );
-};
+}; {/* Destination Detail Modal */ }
+

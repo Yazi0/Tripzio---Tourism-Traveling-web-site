@@ -1,6 +1,7 @@
 import React from 'react';
 import { Map, Users, Heart, Award, Shield, Smile } from 'lucide-react';
 import { Card } from '../components/ui/Card';
+import Img from '../assets/images/WhyChooese.png';
 
 const stats = [
     { label: 'Destinations', value: '50+', icon: Map },
@@ -34,7 +35,7 @@ export const About = () => {
             <div className="relative bg-primary-900 text-white py-24 mb-16 overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1588258524675-c63673c75cf7?auto=format&fit=crop&q=80&w=2000"
+                        src="https://thumbs.dreamstime.com/b/breathtaking-golden-hour-sunset-over-ocean-stunning-seascape-photography-vibrant-colors-deep-sense-witness-beauty-353334471.jpg"
                         alt="Sri Lanka Landscape"
                         className="w-full h-full object-cover opacity-20"
                     />
@@ -53,7 +54,7 @@ export const About = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <div>
                         <img
-                            src="https://images.unsplash.com/photo-1546708773-e5295311f99f?auto=format&fit=crop&q=80&w=800"
+                            src={Img}
                             alt="Sri Lankan Culture"
                             className="rounded-2xl shadow-xl w-full"
                         />

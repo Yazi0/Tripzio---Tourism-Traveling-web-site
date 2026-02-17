@@ -1,41 +1,18 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from './components/layout/AppLayout';
-import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Home } from './pages/Home';
+import { Tour } from './pages/Tour';
 import { DestinationsPage } from './pages/DestinationsPage';
 import { ListingsPage } from './pages/listings/ListingsPage';
 import { ListingDetail } from './pages/listings/ListingDetail';
-import { GuestDashboard } from './pages/dashboard/GuestDashboard';
-import { ProviderDashboard } from './pages/dashboard/ProviderDashboard';
-import { GuideDashboard } from './pages/dashboard/GuideDashboard';
-import { AdminDashboard } from './pages/dashboard/AdminDashboard';
 import { CustomizeTourPage } from './pages/CustomizeTourPage';
 import { HelpCenter } from './pages/support/HelpCenter';
 import { Terms } from './pages/support/Terms';
 import { Privacy } from './pages/support/Privacy';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
-import { useAuthStore } from './stores/authStore';
 import { Card } from './components/ui/Card';
-import { Badge } from './components/ui/Badge';
-
-const ProtectedRoute = ({ children, roles }: { children: React.ReactNode, roles?: string[] }) => {
-  const { user, isAuthenticated } = useAuthStore();
-  if (!isAuthenticated || !user) return <Navigate to="/auth/login" />;
-  if (roles && !roles.includes(user.role) && user.role !== 'ADMIN') {
-    return <Navigate to="/" />;
-  }
-
-  return <>{children}</>;
-};
-
-// Placeholder components for Dashboards
-
-
-
-
-
 
 const Checkout = () => (
   <div className="max-w-3xl mx-auto py-12 px-4">
@@ -85,12 +62,12 @@ function App() {
         <Route path="/stays" element={<ListingsPage type="STAY" title="Stays & Villas" subtitle="Relax in comfort" />} />
         <Route path="/stays/:id" element={<ListingDetail />} />
 
-        <Route path="/tours" element={<ListingsPage type="TOUR" title="Tours & Experiences" subtitle="Explore the island" />} />
+        <Route path="/tours" element={<Tour />} />
         <Route path="/tours/:id" element={<ListingDetail />} />
 
         <Route path="/search" element={<ListingsPage title="Search Results" />} />
 
-        <Route path="/checkout/:type/:id" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/checkout/:type/:id" element={<Checkout />} />
 
         <Route path="/custom-tour" element={<CustomizeTourPage />} />
 
@@ -102,28 +79,8 @@ function App() {
         <Route path="/contact" element={<Contact />} />
       </Route>
 
-      <Route path="/auth/login" element={<Navigate to="/" />} />
-      <Route path="/auth/register" element={<Navigate to="/" />} />
-
-
-      {/* Dashboard Routes */}
-      <Route path="/" element={<DashboardLayout />}>
-        {/* Guest Routes - Redirect /me/reviews etc to GuestDashboard */}
-        <Route path="me" element={<ProtectedRoute><GuestDashboard /></ProtectedRoute>} />
-        <Route path="me/:tab" element={<ProtectedRoute><GuestDashboard /></ProtectedRoute>} />
-
-        {/* Provider Routes */}
-        <Route path="provider" element={<ProtectedRoute roles={['PROVIDER']}><ProviderDashboard /></ProtectedRoute>} />
-        <Route path="provider/:tab" element={<ProtectedRoute roles={['PROVIDER']}><ProviderDashboard /></ProtectedRoute>} />
-
-        {/* Guide Routes */}
-        <Route path="guide" element={<ProtectedRoute roles={['GUIDE']}><GuideDashboard /></ProtectedRoute>} />
-        <Route path="guide/:tab" element={<ProtectedRoute roles={['GUIDE']}><GuideDashboard /></ProtectedRoute>} />
-
-        {/* Admin Routes */}
-        <Route path="admin" element={<ProtectedRoute roles={['ADMIN']}><AdminDashboard /></ProtectedRoute>} />
-        <Route path="admin/:tab" element={<ProtectedRoute roles={['ADMIN']}><AdminDashboard /></ProtectedRoute>} />
-      </Route>
+      {/* Redirects/Fallbacks */}
+      <Route path="*" element={<Navigate to="/" />} />
 
     </Routes>
   );

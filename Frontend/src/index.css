@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    font-size: 14px; /* Default is usually 16px, this reduces everything */
+  }
   body {
     @apply antialiased text-gray-900 bg-gray-50;
   }

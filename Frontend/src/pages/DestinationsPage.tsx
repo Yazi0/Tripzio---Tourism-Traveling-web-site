@@ -123,7 +123,7 @@ export const destinations: Destination[] = [
         name: 'Yala',
         description: 'The most visited and second largest national park in Sri Lanka.',
         fullDescription: 'Yala National Park is renowned for its leopard population and diverse wildlife. Experience thrilling safari adventures, spot elephants, crocodiles, and a wide variety of bird species in their natural habitat.',
-        image: 'https://images.unsplash.com/photo-1550953930-b3b3a6976269?auto=format&fit=crop&q=80&w=1200',
+        image: 'https://i.ytimg.com/vi/hKUZi5Zfz64/maxresdefault.jpg',
         count: 38,
         rating: 4.8,
         bestSeason: 'February to June',
@@ -131,13 +131,34 @@ export const destinations: Destination[] = [
         popularActivities: ['Safari Tours', 'Bird Watching', 'Nature Photography', 'Camping'],
         coordinates: { lat: 6.3730, lng: 81.5052 },
         images: [
-            'https://images.unsplash.com/photo-1550953930-b3b3a6976269?auto=format&fit=crop&q=80&w=1200',
-            'https://images.unsplash.com/photo-1550953964-0375a1b428e3?auto=format&fit=crop&q=80&w=1200',
-            'https://images.unsplash.com/photo-1550953930-b3b3a6976269?auto=format&fit=crop&q=80&w=1200'
+            'https://www.travelsewhere.net/wp-content/uploads/2026/02/DSC_0432-6.jpg',
+            'https://srilankanexpeditions.co.uk/images/main_slider/sri-lanka-wildlife/01.jpg',
+            'https://theabroadguide.com/wp-content/uploads/2026/02/from-ella-to-yala-national-park-safari-with-tree-house-stay.jpg'
         ],
         category: 'Wildlife'
+    },
+    {
+        id: 'mirissa',
+        name: 'Mirissa',
+        description: 'A tropical paradise famous for whale watching and stunning sunsets.',
+        fullDescription: 'Mirissa is a vibrant beach town on the south coast, world-famous for blue whale watching. Relax on the coconut-lined beach, surf the waves, and witness the majestic giants of the ocean on a boat tour.',
+        image: 'https://i.ytimg.com/vi/pmKtgLchb9A/maxresdefault.jpg',
+        count: 76,
+        rating: 4.8,
+        bestSeason: 'November to April',
+        seasons: [10, 11, 0, 1, 2, 3],
+        popularActivities: ['Whale Watching', 'Surfing', 'Beach Parties', 'Snorkeling'],
+        coordinates: { lat: 5.9483, lng: 80.4716 },
+        images: [
+            'https://media.istockphoto.com/id/1198786249/photo/tour-boats-with-guests-snorkelling-with-whale-sharks.jpg?s=612x612&w=0&k=20&c=3MG-hWJO9Gv53rec3OvspsksIaKqlvHMwW6sY2m_3Tg=',
+            'https://www.voyager-srilanka.fr/wp-content/uploads/2021/02/restaurant-mirissa-1024x683.jpg',
+            'https://i0.wp.com/shewalkstheworld.com/wp-content/uploads/2019/02/Surf-School-1.jpg?resize=768%2C578&ssl=1'
+        ],
+        category: 'Beaches'
     }
 ];
+
+import { ShareModal } from '../components/ui/ShareModal';
 
 export const DestinationsPage = () => {
     const navigate = useNavigate();
@@ -145,7 +166,11 @@ export const DestinationsPage = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isFavorite, setIsFavorite] = useState<{ [key: string]: boolean }>({});
 
-    // Filtering State
+    // Share State
+    const [shareModalOpen, setShareModalOpen] = useState(false);
+    const [shareDestination, setShareDestination] = useState<Destination | null>(null);
+
+    // Filter Logic
     const [activeCategory, setActiveCategory] = useState('All');
     const [showBestTimeOnly, setShowBestTimeOnly] = useState(false);
 
@@ -335,7 +360,8 @@ export const DestinationsPage = () => {
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    // Share functionality
+                                                    setShareDestination(dest);
+                                                    setShareModalOpen(true);
                                                 }}
                                                 className="p-2 hover:bg-gray-100 rounded-full"
                                             >
@@ -389,7 +415,7 @@ export const DestinationsPage = () => {
                                     window.scrollTo({ top: 0, behavior: 'smooth' });
                                 }}>
                                 <img
-                                    src="https://images.unsplash.com/photo-1540206395-688085723adb?auto=format&fit=crop&q=80&w=1200"
+                                    src="https://tse1.mm.bing.net/th/id/OIP.TdtPJUAqHwjE7LJPkpiZawHaE8?rs=1&pid=ImgDetMain&o=7&rm=3"
                                     alt="Beach"
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
@@ -582,7 +608,13 @@ export const DestinationsPage = () => {
                                                     <Heart className={`h-4 w-4 ${isFavorite[selectedDestination.id] ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
                                                     <span>{isFavorite[selectedDestination.id] ? 'Saved' : 'Save'}</span>
                                                 </button>
-                                                <button className="flex-1 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 flex items-center justify-center gap-2">
+                                                <button
+                                                    onClick={() => {
+                                                        setShareDestination(selectedDestination);
+                                                        setShareModalOpen(true);
+                                                    }}
+                                                    className="flex-1 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 flex items-center justify-center gap-2"
+                                                >
                                                     <Share2 className="h-4 w-4 text-gray-600" />
                                                     <span>Share</span>
                                                 </button>
@@ -595,6 +627,13 @@ export const DestinationsPage = () => {
                     </div>
                 )
             }
+
+            <ShareModal
+                isOpen={shareModalOpen}
+                onClose={() => setShareModalOpen(false)}
+                title={shareDestination ? `Check out ${shareDestination.name} in Sri Lanka!` : 'Tripzio'}
+                url={shareDestination ? `${window.location.origin}/search?location=${encodeURIComponent(shareDestination.name)}` : window.location.href}
+            />
         </>
     );
 };

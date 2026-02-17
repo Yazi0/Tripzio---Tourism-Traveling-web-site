@@ -50,7 +50,7 @@ export const ListingsPage = ({ type, title, subtitle }: ListingsPageProps) => {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {type === 'TOUR' && (
                     <div className="col-span-1 lg:col-span-4 mb-4">
-                        <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl p-8 text-white relative overflow-hidden group hover:shadow-xl transition-shadow cursor-pointer" onClick={() => window.location.href = '/custom-tour'}>
+                        <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl p-8 text-white relative overflow-hidden group hover:shadow-xl transition-shadow cursor-pointer" onClick={() => window.open('https://wa.me/94776683072?text=I%20want%20to%20plan%20the%20tour', '_blank')}>
                             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-white/20 transition-colors"></div>
                             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                                 <div>

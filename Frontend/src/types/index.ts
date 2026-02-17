@@ -48,7 +48,7 @@ export interface StayListing extends ListingBase {
 export interface TourListing extends ListingBase {
     type: 'TOUR';
     duration: string; // e.g., "3 Days"
-    tourType: 'Cultural' | 'Wildlife' | 'Adventure' | 'City' | 'Relaxation';
+    tourType: 'Cultural' | 'Wildlife' | 'Adventure' | 'City' | 'Relaxation' | 'Beach' | 'Mountain' | 'Temple' | 'Whale Watching';
     groupSize: string; // e.g., "Max 10"
     itinerary: string[];
     included: string[];
