@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
+import { FloatingButtons } from './FloatingButtons';
 
 export const AppLayout = () => {
     return (
@@ -11,6 +12,7 @@ export const AppLayout = () => {
                 <Outlet />
             </main>
             <Footer />
+            <FloatingButtons />
         </div>
     );
 };

@@ -25,7 +25,7 @@ export const Navbar = () => {
             return;
         }
 
-        const message = `*New General Inquiry*
+        const message = `*New General Enquire*
 Name: ${name}
 Contact: ${contact}
 Country: ${country}
@@ -85,7 +85,7 @@ Description: ${description}`;
                                 onClick={() => setIsInquiryOpen(true)}
                                 className="rounded-full px-6 shadow-md hover:shadow-lg transition-all"
                             >
-                                Inquiry Now
+                                Enquire Now
                             </Button>
                         </div>
 
@@ -152,7 +152,7 @@ Description: ${description}`;
                     <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                             <div>
-                                <h2 className="text-xl font-bold text-gray-900">General Inquiry</h2>
+                                <h2 className="text-xl font-bold text-gray-900">General Enquire</h2>
                                 <p className="text-gray-500 text-sm">Tell us what you're looking for</p>
                             </div>
                             <button onClick={() => setIsInquiryOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -216,7 +216,7 @@ Description: ${description}`;
                             </div>
 
                             <Button className="w-full py-4 text-lg font-bold mt-4 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all" onClick={handleInquirySubmit}>
-                                Send Inquiry via WhatsApp
+                                Send Enquire  via WhatsApp
                             </Button>
                         </div>
                     </div>
